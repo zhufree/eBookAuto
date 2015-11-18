@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<style type="text/css">
+	body{
+		margin: 0;
+		padding: 0;
+		background-color: #B5CAA0;
+	}
+	#main{
+		width: 80%;
+		background-color: #DAC9A6;
+		margin: auto 10%;
+		text-align: center;
+	}
+	#cover{
+		margin: auto 0;
+		width: 45%;
+	}
+	#text{
+		text-align: left;
+		display:inline-block;
+		margin: 10px 40px;
+	}
+	.pic_in_text_left{
+		margin: 5px;
+		float: left;
+		border: 3px solid #42602D;
+	}
+	.pic_in_text_right{
+		margin: 5px;
+		float: right;
+		border: 3px solid #42602D;
+	}
+	
+	.pic_in_text_center{
+		text-align: center;
+	}
+	.pic_in_text_center img{
+		border: 3px solid #42602D;
+	}
+	h4{
+		margin: 0px;
+	}
+	p{
+		margin: 0;
+		padding: 0;
+	}
+</style>
+<body>
+	<div id="main">
+		<img src="" id="cover" onclick="show_text()">
+		<h4 class="char_title" id="title_1">一、早餐之前</h4>
+		<div id="text">
+			
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var main = document.getElementById('main');
+	var title = document.getElementById('title_1');
+	var text = document.getElementById('text');
+	console.log(text);
+	main.removeChild(title);
+	main.removeChild(text);
+	function show_text(){
+		main.appendChild(title);
+		main.appendChild(text);
+		main.removeChild(document.getElementById('cover'));
+	}
+</script>
+</html>
