@@ -6,8 +6,10 @@
 
 ##功能
 >自动读取文件夹中的文字，图片，（视频音频还未实现），生成html页面。
+
 ##配置
 运行环境要求：python2.7+
+
 第三方库依赖：
 >beautifulsoup4==4.4.0
 Pillow==2.3.0
@@ -15,7 +17,7 @@ Pillow==2.3.0
 安装了pip之后可以直接运行
 
     sudo pip install -r requirement.txt
-安装
+
 
 ##文件系统要求
 - 内容文件放在特定文件夹中
