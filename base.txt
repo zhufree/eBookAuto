@@ -42,18 +42,24 @@
 	.pic_in_text_center img{
 		border: 3px solid #42602D;
 	}
-	h4{
+	h3{
 		margin: 0px;
 	}
 	p{
 		margin: 0;
 		padding: 0;
 	}
+	.sound_in_text, .video_in_text{
+		clear: both;
+		display: block;
+		margin: auto;
+	}
+
 </style>
 <body>
 	<div id="main">
 		<img src="" id="cover" onclick="show_text()">
-		<h4 class="char_title" id="title_1">一、早餐之前</h4>
+		<h3 class="char_title" id="title_1">一、早餐之前</h3>
 		<div id="text">
 			
 		</div>
