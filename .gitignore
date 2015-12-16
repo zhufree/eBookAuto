@@ -59,4 +59,6 @@ target/
 *.docx
 *.mp4
 *.mp3
+*.jpg
+*.jpeg
 *~

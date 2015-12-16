@@ -4,16 +4,24 @@
   <meta charset="utf-8"/>
   <title>
   </title>
+  <link href="static/css/audio.css" rel="stylesheet" type="text/css"/>
+  <script href="static/js/audio.js" type="text/javascript">
+  </script>
+  <link href="http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js">
+  </script>
+  <script src="http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript">
+  </script>
  </head>
  <style type="text/css">
   body{
 		margin: 0;
 		padding: 0;
-		background-color: #B5CAA0;
+		background-color: #78C2C4;
 	}
 	#main{
 		width: 80%;
-		background-color: #DAC9A6;
+		background-color: #FCFAF2;
 		margin: auto 10%;
 		text-align: center;
 	}
@@ -146,9 +154,6 @@
     </p>
     <br/>
     <p>
-    </p>
-    <br/>
-    <p>
      “他是你的了，”阿拉贝尔先生说，“是你使他免于一死。愿上帝能原谅我这愚蠢的行为。”
     </p>
     <br/>
@@ -224,8 +229,32 @@
      [pic5]
     </p>
     <br/>
-    <audio class="sound_in_text" controls="controls" src="./sounds/sound1.mp3">
-    </audio>
+    <div class="musicPlayer">
+     <div class="song">
+      <img alt="cover" class="cover" src="pics/cover.jpg"/>
+      <div class="songsInfo">
+       <h4 class="song-name">
+        sound1.mp3
+       </h4>
+       <p class="singer">
+       </p>
+      </div>
+     </div>
+     <div class="btnMenu">
+      <span class="play" id="playBtn">
+       <img src="static/img/play.png"/>
+      </span>
+      <div id="progress">
+      </div>
+      <div class="volumeBar">
+       <span class="volumeUp" id="volumeIco">
+        <img src="static/img/volumedown.png"/>
+       </span>
+       <div id="volume">
+       </div>
+      </div>
+     </div>
+    </div>
     <p>
      [sound1]
     </p>
@@ -233,17 +262,75 @@
    </div>
   </div>
  </body>
- <script type="text/javascript">
-  var main = document.getElementById('main');
-	var title = document.getElementById('title_1');
-	var text = document.getElementById('text');
-	console.log(text);
-	main.removeChild(title);
-	main.removeChild(text);
-	function show_text(){
-		main.appendChild(title);
-		main.appendChild(text);
-		main.removeChild(document.getElementById('cover'));
-	}
+ <script id="main" type="text/javascript">
+  $(document).ready(function(){
+    (function(){               
+        var myAudio = new Audio();
+        myAudio.setAttribute('src','./sounds/sound1.mp3');               
+        myAudio.volume=0.5;        
+                        
+        $('#playBtn').click(function(){
+            if(myAudio.paused==true){
+                myAudio.play();
+                $(this).removeClass('play').addClass('pause');
+                $(this).children().attr('src', 'static/img/stop.png');
+            }        
+            else{
+                myAudio.pause();
+                $(this).removeClass('pause').addClass('play');
+                $(this).children().attr('src', 'static/img/play.png');
+            }
+        });                                                        
+       
+        myAudio.addEventListener('timeupdate',function(){
+            var total=parseInt(myAudio.duration);
+            var ct=parseInt(myAudio.currentTime);
+            $("#progress").slider("option",{max:total,value:ct});
+            },false);
+
+        $("#progress").slider({
+            orientation: "horizontal",
+            range: "min",
+            max: 100,
+            value: 0,
+            animate:true,
+            slide:function(event,ui){
+                myAudio.pause();
+                myAudio.currentTime=ui.value;
+                $('#playBtn').children().attr('src', 'static/img/stop.png');
+            },
+            stop:function(event,ui){
+                myAudio.play();                        
+            }                                                        
+        });        
+                        
+        $("#volume").slider({
+             orientation: "vertical",
+             range: "min",
+             max: 100,
+             value: 50,
+             animate:true,
+             slide:function(event,ui){
+                var clsName=$("#volumeIco").attr("class");
+                if(ui.value<50&&ui.value>0){
+                    $("#volumeIco").removeClass(clsName).addClass('volumeDown');
+                    $('#volumeIco').children().attr('src', 'static/img/volumedown.png');
+                    }
+                if(ui.value>50){
+                    $("#volumeIco").removeClass(clsName).addClass('volumeUp');
+                    $('#volumeIco').children().attr('src', 'static/img/volumeup.png');
+                    }        
+                if(ui.value==0){
+                    $("#volumeIco").removeClass(clsName).addClass('volumeOff');
+                    $('#volumeIco').children().attr('src', 'static/img/volumeoff.png');
+                    }        
+                },
+             stop:function(event,ui){
+                myAudio.volume=ui.value/100;                        
+             }                                                        
+        });
+    })();
+
+});
  </script>
 </html>
