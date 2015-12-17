@@ -112,19 +112,22 @@ def insert_video(video_keyword, para, temp):
     """
     # search video id in current para, like 'video1','img1'
     video_id = re.search(video_keyword + r'(\d+)', para).group()
-    print '==========insert video ' + video_id + '=========='
     # get path of the video, like './videos/video1'
     video_url = [
         url for url in os.listdir('./videos') if url.startswith(video_id)][0]
-    new_div = temp.new_tag(
+    new_video_div = temp.new_tag(
     	'video', 
     	src='./videos/' + video_url, 
     	controls="controls", 
     	width="600", 
     	height="450"
     	)
-    new_div['class'] = 'video_in_text'
-    return new_div
+    new_video_div['class'] = 'video_in_text'
+    new_video_div['style'] = 'clear: both;display: block;margin: auto;'
+    with open(video_url + '.html', 'w+') as f:
+        f.write(new_video_div.prettify("utf-8"))
+        print '==========finish create video page ' + video_url + '==========' 
+    return video_url
 
 
 def handle_text(filename, img_keyword, sound_keyword, video_keyword):
@@ -139,8 +142,8 @@ def handle_text(filename, img_keyword, sound_keyword, video_keyword):
     temp = BeautifulSoup(text, "lxml")
 
     # replace cover img
-    cover = temp.find('img', {'id': 'cover'})
-    cover['src'] = './pics/cover.jpg'
+    # cover = temp.find('img', {'id': 'cover'})
+    # cover['src'] = './pics/cover.jpg'
 
     # handle title
     title = temp.find('h3')
@@ -159,13 +162,20 @@ def handle_text(filename, img_keyword, sound_keyword, video_keyword):
             img_result = insert_img(img_keyword, paras[i], temp, count)
             new_img_div, count = img_result[0], img_result[1]
             textbox.append(new_img_div)
+            continue
         if sound_keyword in paras[i]:
             new_sound_div, sound_js = insert_sound(sound_keyword, paras[i], temp)
             textbox.append(new_sound_div)
             jsbox.append(sound_js)
+            continue
         if video_keyword in paras[i]:
-            new_video_div = insert_video(video_keyword, paras[i], temp)
-            textbox.append(new_video_div)
+            video_url = insert_video(video_keyword, paras[i], temp)
+            new_video_link = temp.new_tag('a')
+            new_video_link['href'] = video_url + '.html'
+            new_video_link['target'] = '_blank'
+            new_video_link.string = video_url
+            textbox.append(new_video_link)
+            continue
         textbox.append(new_p)
         textbox.append(new_br)
 
