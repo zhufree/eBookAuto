@@ -5,11 +5,16 @@ from PIL import Image
 
 import os
 import re
+import sys
+import HTMLParser
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 # read html template text files
 with open('base.txt', 'r+') as f:
     text = f.read()
 
+html_parser = HTMLParser.HTMLParser()
 
 def change_img_size(img, new_pic_url):
     print '==========change img size=========='
@@ -24,7 +29,7 @@ def change_img_size(img, new_pic_url):
     return img
 
 
-def insert_img(img_keyword, para, temp, count):
+def insert_img(img_id, temp, count):
     """
     :param img_keyword:word for search in text to show here should be a image file, such as 'img', 'pic'
     :param para:one paragraphs in a chapter.
@@ -33,7 +38,7 @@ def insert_img(img_keyword, para, temp, count):
     :return new_div: create a tag of the picture, to insert into html.
     """
     # search pic id in current para, like 'pic1','img1'
-    pic_id = re.search(img_keyword + r'(\d+)', para).group()
+    pic_id = 'pic' + img_id
     print '==========insert img ' + pic_id + '=========='
     # get path of the pic, like './pics/pic1'
     pic_url = [
@@ -80,30 +85,26 @@ def insert_img(img_keyword, para, temp, count):
     return new_div, count
 
 
-def insert_sound(sound_keyword, para, temp):
+def insert_sound(keyword, sound_id, para, temp):
     """    
-    :param sound_keyword:word for search in text to show here should be a sound file, such as 'sound', 'music', '音乐'
+    :param play_logoword:word for search in text to show here should be a sound file, such as 'sound', 'music', '音乐'
     :param para:one paragraphs in a chapter.
     :param temp: template of html
     :return new_div: create a tag of the sound, to insert into html.
     """
     # search sound id in current para, like 'sound1','img1'
-    sound_id = re.search(sound_keyword + r'(\d+)', para).group()
+    sound_id = 'sound' + sound_id
     print '==========insert sound ' + sound_id + '=========='
     # get path of the sound, like './sounds/sound1'
-    with open('audio.txt', 'r+') as f:
-        text = f.read()
-        audio_tag = BeautifulSoup(text, 'lxml').div
     sound_url = [
         url for url in os.listdir('./sounds') if url.startswith(sound_id)][0]
-    audio_tag.h4.string = sound_url
-    with open('static/js/audio.js', 'r+') as f:
-        text = f.read()
-        audio_js = text.replace("('src','')", "('src','" + "./sounds/" + sound_url + "')")
-    return audio_tag, audio_js
+    play_logo = temp.new_tag('img', src='static/img/play.png')
+    play_logo['onclick'] = 'play_sound("' + './sounds/' + sound_url + '")'
+    play_logo['class'] = 'play_logo'    
+    return play_logo
 
 
-def insert_video(video_keyword, para, temp):
+def insert_video(video_id, para, temp):
     """
     :param video_keyword:word for search in text to show here should be a video file, such as 'video'
     :param para:one paragraphs in a chapter.
@@ -111,7 +112,7 @@ def insert_video(video_keyword, para, temp):
     :return new_div: create a tag of the video, to insert into html.
     """
     # search video id in current para, like 'video1','img1'
-    video_id = re.search(video_keyword + r'(\d+)', para).group()
+    video_id = 'video' + video_id
     # get path of the video, like './videos/video1'
     video_url = [
         url for url in os.listdir('./videos') if url.startswith(video_id)][0]
@@ -139,7 +140,9 @@ def handle_text(filename, img_keyword, sound_keyword, video_keyword):
     with open(os.path.join('./text/', filename), 'r+') as f:
         paras = [p.strip() for p in f.readlines() if len(p) > 4]
     # read html template
-    temp = BeautifulSoup(text, "lxml")
+    with open(r'base.txt', 'r+') as f:
+        template_text = f.read()
+        temp = BeautifulSoup(template_text, "lxml")
 
     # replace cover img
     # cover = temp.find('img', {'id': 'cover'})
@@ -148,36 +151,56 @@ def handle_text(filename, img_keyword, sound_keyword, video_keyword):
     # handle title
     title = temp.find('h3')
     title.string = paras[0]
+    temp.title = paras[0]
 
     # handle paras
-    textbox = temp.find('div', {'id': 'text'})
-    jsbox = temp.find('script', {'id': 'main'})
+    text_box = temp.find('div', {'id': 'text'})
+    js_box = temp.find('script', {'id': 'main'})
     count = [0,0]
+    img_pat = re.compile(r'\((\W+?)\)\['+img_keyword+r'(\S+?)\]')
+    sound_pat = re.compile(r'\((\W+?)\)\['+sound_keyword+r'(\S+?)\]')
+    video_pat = re.compile(r'\((\W+?)\)\['+video_keyword+r'(\S+?)\]')
     for i in range(1, len(paras)):
         new_p = temp.new_tag('p')
         new_br = temp.new_tag('br')
-        new_p.string = paras[i]
         # handle img in text
-        if img_keyword in paras[i]:
-            img_result = insert_img(img_keyword, paras[i], temp, count)
-            new_img_div, count = img_result[0], img_result[1]
-            textbox.append(new_img_div)
-            continue
-        if sound_keyword in paras[i]:
-            new_sound_div, sound_js = insert_sound(sound_keyword, paras[i], temp)
-            textbox.append(new_sound_div)
-            jsbox.append(sound_js)
-            continue
-        if video_keyword in paras[i]:
-            video_url = insert_video(video_keyword, paras[i], temp)
-            new_video_link = temp.new_tag('a')
-            new_video_link['href'] = video_url + '.html'
-            new_video_link['target'] = '_blank'
-            new_video_link.string = video_url
-            textbox.append(new_video_link)
-            continue
-        textbox.append(new_p)
-        textbox.append(new_br)
+        if img_pat.findall(paras[i]):
+            imgs = img_pat.findall(paras[i])# a list of tuple(text, img_id)
+            for img in imgs:
+                img_result = insert_img(img[1], temp, count)
+                new_img_div, count = img_result[0], img_result[1]
+                text_box.append(new_img_div)
+            new_p.string = re.sub(img_pat, r'\1', paras[i])# delete () and []
+            # text_box.append(new_p)
+            # text_box.append(new_br)
+        if sound_pat.findall(paras[i]):
+            sounds = sound_pat.findall(paras[i])
+            new_p.string = re.sub(sound_pat, r'\1', paras[i])
+            for sound in sounds:
+                new_play_logo = insert_sound(sound[0], sound[1], paras[i], temp)
+                new_p.append(new_play_logo)
+            # text_box.append(new_p)
+            # text_box.append(new_br)
+        if video_pat.findall(paras[i]):
+            videos = video_pat.findall(paras[i])
+            for video in videos:
+                new_video_link = temp.new_string("<a target='_blank' href='"+insert_video(video[1], paras[i], temp) + ".html'>"+video[0]+"</a>")
+                new_p.string = re.sub(video_pat, new_video_link, new_p.string)
+                new_p = BeautifulSoup(html_parser.unescape(str(new_p)), 'lxml')
+        if not (img_pat.findall(paras[i]) or sound_pat.findall(paras[i]) or video_pat.findall(paras[i])):
+            new_p.string = paras[i]
+        text_box.append(new_p)
+        text_box.append(new_br)
+
+    with open('audio.txt', 'r+') as f:
+        text = f.read()
+        audio_tag = BeautifulSoup(text, 'lxml').div
+        text_box.append(audio_tag)
+
+    # add js about sound to html script
+    # with open('static/js/audio.js', 'r+') as f:
+    #     audio_js = f.read()
+    #     js_box.append(audio_js)     
 
     with open(filename[:-4] + '.html', 'w+') as f:
         f.write(temp.prettify("utf-8"))

@@ -3,8 +3,6 @@
 /* resect */
 @font-face {
         font-family: 'sirus';
-        /*src: url("../font/sirus.eot");
-        src: url("../font/sirus.eot?#iefix") format('embedded-opentype'), url("../font/sirus.woff") format('woff'), url("../font/sirus.ttf") format('truetype'), url("../font/sirus.svg#sirus") format('svg');*/
         font-weight: normal;
         font-style: normal;
 }
@@ -21,12 +19,18 @@ a {
 /* resect */
 
 body {
-        /*background:url(bg.jpg);*/
         font-family:Arial, Helvetica, sans-serif;
 }
 .musicPlayer {
-        position: relative;
-        margin:70px auto;
+        right: 0px;
+        top: 50px;
+        position: fixed;
+        /*transform:rotate(90deg);
+        -ms-transform:rotate(90deg);    
+        -moz-transform:rotate(90deg);    
+        -webkit-transform:rotate(90deg); 
+        -o-transform:rotate(90deg);*/ 
+        margin:0px auto;
         width:300px;
         height:130px;
         border-radius:8px;

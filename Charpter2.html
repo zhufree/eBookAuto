@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <title>
   </title>
-  <link href="static/css/audio.css" rel="stylesheet" type="text/css"/>
-  <link href="static/css/base.css" rel="stylesheet" type="text/css"/>
-  <script href="static/js/audio.js" type="text/javascript">
-  </script>
+  <link href="./static/css/audio.css" rel="stylesheet" type="text/css"/>
+  <link href="./static/css/base.css" rel="stylesheet" type="text/css"/>
   <link href="http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet" type="text/css"/>
   <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js">
   </script>
   <script src="http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript">
+  </script>
+  <script src="./static/js/audio.js" type="text/javascript">
   </script>
  </head>
  <body>
@@ -21,7 +21,14 @@
     二、威伯
    </h3>
    <div id="text">
-    <img class="pic_in_text_left" src="./pics/small_pic6.jpg"/>
+    <p>
+     芬爱威伯胜过了一切。她喜欢抚摩着他，喂他，抱他上床睡觉。每天早晨，只要她一起床，就亲自给他热牛奶，再为他系上围嘴儿，为他拿着瓶子。每天下午，当校车停到她家门前，她就会跳下车，跑到厨房为他准备另一瓶牛奶。晚饭时她还要一遍遍地喂他，直到上床就寝前为止。每天下午，芬刚离开学校的时候，阿拉贝尔太太就替芬喂威伯。威伯虽然喜欢喝奶，但只有芬为他热奶时，他才感到莫大的幸福，这时他会站起来，用充满深情的眼睛注视着她。
+    </p>
+    <br/>
+    <p>
+     [pic6]
+    </p>
+    <br/>
     <p>
      在威伯出生后的最初数天里，他被允许住在厨房火炉旁的盒子里。可后来，阿拉贝尔太太开始抱怨说，他该搬到柴棚那儿的大一点的房子里去住。因此在两周大的时候，他被挪到了户外。已经快到苹果树开花的时候了，天气正在变暖。阿拉贝尔先生在苹果树下为威伯特别圈了一座小院子，在里面给他搭了一个铺满稻草的大房子，房子底下还留出一个小门，如果他高兴，他可以随时从中进出。
     </p>
@@ -74,12 +81,36 @@
      这事一会儿就办妥了。伊迪丝舅妈听到芬打来的电话，便大声的叫在谷仓干活的霍默舅舅来听。当他听说小猪只卖六美元时，便说他决定买下了。第二天，威伯被从他在苹果树下的小房子里带走，住进了祖克曼先生的谷仓下面，地窖里的牛粪堆旁。
     </p>
     <br/>
-    <a href="video1.mp4.html" target="_blank">
-     video1.mp4
-    </a>
+    <p>
+     [video1]
+    </p>
+    <br/>
+    <div class="musicPlayer">
+     <div class="song">
+      <img alt="cover" class="cover" src="pics/cover.jpg"/>
+      <div class="songsInfo">
+       <h4 class="song-name">
+       </h4>
+       <p class="singer">
+       </p>
+      </div>
+     </div>
+     <div class="btnMenu">
+      <span class="play" id="playBtn">
+       <img src="static/img/play.png"/>
+      </span>
+      <div id="progress">
+      </div>
+      <div class="volumeBar">
+       <span class="volumeUp" id="volumeIco">
+        <img src="static/img/volumedown.png"/>
+       </span>
+       <div id="volume">
+       </div>
+      </div>
+     </div>
+    </div>
    </div>
   </div>
  </body>
- <script id="main" type="text/javascript">
- </script>
 </html>
